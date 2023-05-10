@@ -23,21 +23,10 @@ exports.loginAuthController = AsyncHandler(async (req, res) => {
   // verify if password match
   const verifyPassword = await bcrypt.compare(password, user.password);
 
-  console.log(verifyPassword);
-
   if (!verifyPassword) {
     return res.json({
       message: "Usuário e/ou senha inválido",
     });
-  }
-
-  const token = generateToken(user.id);
-
-  if (token) {
-    const verify = verifyToken(
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBjNzcwY2I1LWMzMmUtNGNhZS1hY2MwLWVjOWE5MjBmNzE1YSIsImlhdCI6MTY4MzY3NzAwNSwiZXhwIjoxNjg0MTA5MDA1fQ.J4BKcfxprFsEtOlNY7LApayrDK_3inl9lwLZxgABkD0"
-    );
-    console.log(verify);
   }
 
   data = {
