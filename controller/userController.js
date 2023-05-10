@@ -80,6 +80,10 @@ exports.storeUserController = AsyncHandler(async (req, res) => {
  */
 exports.indexUserController = AsyncHandler(async (req, res) => {
   const users = await User.findAll({
+    include: {
+      model: Branche,
+      attributes: ["name", "address", "phone", "whatsapp"],
+    },
     attributes: [
       "id",
       "username",
@@ -106,7 +110,10 @@ exports.showUserController = AsyncHandler(async (req, res) => {
 
   const user = await User.findOne({
     where: { id },
-    include: [Branche],
+    include: {
+      model: Branche,
+      attributes: ["name", "address", "phone", "whatsapp"],
+    },
     attributes: [
       "id",
       "username",
@@ -146,6 +153,7 @@ exports.updateUserController = AsyncHandler(async (req, res) => {
     email,
     phone,
     role,
+    brancheId,
   } = req.body;
 
   const verifyIfUserExists = await User.findByPk(id);
@@ -156,6 +164,16 @@ exports.updateUserController = AsyncHandler(async (req, res) => {
     const error = new Error("Usuário não encontrado");
     error.statusCode = 404;
     throw error;
+  }
+
+  // Verificando se o id da filial foi passado e se é valido
+  if (brancheId) {
+    const isBrancheExists = await Branche.findByPk(brancheId);
+    if (!isBrancheExists) {
+      const error = new Error("Loja não encontrada");
+      error.statusCode = 404;
+      throw error;
+    }
   }
 
   // Verificando se o usuário enviou a senha para alterar
@@ -173,6 +191,12 @@ exports.updateUserController = AsyncHandler(async (req, res) => {
   }
 
   // Verificando se o nome de usuário já existe.
+  if (!username) {
+    const error = new Error("Nome de usuário obrigatório");
+    error.statusCode = 404;
+    throw error;
+  }
+
   const verifyIfUsernameExist = await User.findOne({
     where: {
       username,
@@ -198,6 +222,7 @@ exports.updateUserController = AsyncHandler(async (req, res) => {
       email,
       phone,
       role,
+      brancheId,
     },
     {
       where: { id },
