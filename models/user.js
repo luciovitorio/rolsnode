@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      User.belongsTo(models.Branche, { foreignKey: "brancheId" });
     }
   }
   User.init(
@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         primaryKey: true,
       },
+      brancheId: DataTypes.UUID,
       username: DataTypes.STRING,
       password: DataTypes.STRING,
       is_active: {

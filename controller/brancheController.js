@@ -28,7 +28,7 @@ exports.storeBrancheController = AsyncHandler(async (req, res) => {
 
   res.status(201).json({
     status: "success",
-    message: "Usuário criado com sucesso",
+    message: "Filial cadastrada com sucesso",
     data: branche,
   });
 });

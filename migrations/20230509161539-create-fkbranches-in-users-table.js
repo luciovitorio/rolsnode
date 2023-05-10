@@ -11,8 +11,9 @@ module.exports = {
         model: "Branches",
         key: "id",
       },
+      allowNull: true,
       onUpdate: "CASCADE",
-      onDelete: "CASCADE",
+      onDelete: "SET NULL",
     });
   },
 

@@ -13,6 +13,16 @@ const isLogin = AsyncHandler(async (req, res, next) => {
 
   const verifiedToken = verifyToken(token);
 
+  // Verificando se o token enviado na requisição pertence a algum usuário
+  const verifiedIfExistUserWithThisToken = await User.findByPk(
+    verifiedToken.id
+  );
+
+  if (!verifiedIfExistUserWithThisToken) {
+    const err = new Error("Token inválido e/ou expirado");
+    next(err);
+  }
+
   if (verifiedToken) {
     const user = await User.findOne({
       where: { id: verifiedToken.id },

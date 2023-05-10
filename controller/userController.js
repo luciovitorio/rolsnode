@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Branche } = require("../models");
 const bcrypt = require("bcrypt");
 const AsyncHandler = require("express-async-handler");
 const { Op } = require("sequelize");
@@ -18,6 +18,7 @@ exports.storeUserController = AsyncHandler(async (req, res) => {
     email,
     phone,
     role,
+    brancheId,
   } = req.body;
 
   // Check if username exists
@@ -31,6 +32,16 @@ exports.storeUserController = AsyncHandler(async (req, res) => {
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  // Verificando se o id da filial foi passado e se é valido
+  if (brancheId) {
+    const isBrancheExists = await Branche.findByPk(brancheId);
+    if (!isBrancheExists) {
+      const error = new Error("Loja não encontrada");
+      error.statusCode = 404;
+      throw error;
+    }
+  }
+
   const user = await User.create({
     username,
     password: hashedPassword,
@@ -40,10 +51,19 @@ exports.storeUserController = AsyncHandler(async (req, res) => {
     email,
     phone,
     role,
+    brancheId,
   });
 
   const selectedUser = await User.findByPk(user.id, {
-    attributes: ["id", "username", "is_active", "email", "phone", "role"],
+    attributes: [
+      "id",
+      "username",
+      "is_active",
+      "email",
+      "phone",
+      "role",
+      "brancheId",
+    ],
   });
 
   res.status(201).json({
@@ -86,6 +106,7 @@ exports.showUserController = AsyncHandler(async (req, res) => {
 
   const user = await User.findOne({
     where: { id },
+    include: [Branche],
     attributes: [
       "id",
       "username",

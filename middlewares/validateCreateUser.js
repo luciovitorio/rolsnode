@@ -19,6 +19,9 @@ exports.validateCreateUser = (req, res, next) => {
           "O campo confirmação de senha deve ter no mínimo 3 caracteres",
         "any.only": "As senhas não conferem",
       }),
+    brancheId: Joi.string().max(255).messages({
+      "string.max": "O campo loja deve ter no máximo 255 caracteres",
+    }),
     is_active: Joi.boolean().truthy(1).falsy(0).required().messages({
       "any.required": "O campo ativo é obrigatório",
       "boolean.base": "O campo ativo deve ser sim ou não",
