@@ -1,4 +1,5 @@
 "use strict";
+const { v4: uuidv4 } = require("uuid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Branche extends Model {
@@ -27,5 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Branche",
     }
   );
+
+  Branche.beforeCreate((branche, options) => {
+    branche.id = uuidv4();
+  });
+
   return Branche;
 };

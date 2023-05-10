@@ -1,7 +1,7 @@
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
 const AsyncHandler = require("express-async-handler");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 
 /**
  * @desc Store user
@@ -96,6 +96,13 @@ exports.showUserController = AsyncHandler(async (req, res) => {
       "role",
     ],
   });
+
+  // Verificando se o id é um id válido
+  if (!user) {
+    const error = new Error("Usuário não encontrado");
+    error.statusCode = 404;
+    throw error;
+  }
 
   return res.json({
     data: user,
